@@ -27,7 +27,7 @@
   ```
   python main.py [-h] [--meetings MEETINGS] [--transcript] [--dialogacts] [--extractivesummary] [--abstractivesummary]
   ```
-
+  #### ``` -h: ``` Help
   #### ``` --meetings: ``` Meeting ids as comma-separated values
   #### ``` --transcript: ``` Play Audio with Transcript
   #### ``` --dialogacts: ``` Play Audio with Dialog Acts
