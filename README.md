@@ -1,4 +1,4 @@
-# AMI Corpus Data Conversion
+# AMI Corpus JSON Data Manupulator
 
 ## Getting Started
 
@@ -24,6 +24,6 @@
 
 ## Available Script
     
-  ### Play Audio with Transcrip:
+  ### Play Audio with Transcript:
 
     $ python main.py
