@@ -102,6 +102,11 @@ class Meeting:
       extractive_summary = json.load(extractive_summary_json)
       return extractive_summary
 
+  def get_abstractive_summary(self):
+    with open(f'{self.meeting_dir}/abstractive_summary.json') as abstractive_summary_json:
+      abstractive_summary = json.load(abstractive_summary_json)
+      return abstractive_summary
+
   def print_extractive_summary(self):
     print(f'\n-------- Extractive Summary: {self.meeting_id} ----------')
     ext_summary = self.get_extractive_summary()
@@ -118,12 +123,37 @@ class Meeting:
       print(colored(f'{speaker_id} - {main_type}({sub_type}): {dialog_act}', TRANSCRIPT_COLORS[speaker_id]))
       time.sleep(2)
 
+  def print_abstractive_summary(self):
+    print(f'\n-------- Abstractive Summary: {self.meeting_id} ----------')
+    abs_summary = self.get_abstractive_summary()
+    
+    print(colored('\nAbstract:', 'white', 'on_magenta'))
+    for abstract_sentence in abs_summary['abstract']:
+      print(colored(f'* {abstract_sentence}', 'yellow'))
+    time.sleep(2)
+
+    print(colored('\nActions:', 'white', 'on_magenta'))
+    for action_sentence in abs_summary['actions']:
+      print(colored(f'* {action_sentence}', 'yellow'))
+    time.sleep(2)
+
+    print(colored('\nDecisions:', 'white', 'on_magenta'))
+    for decision_sentence in abs_summary['decisions']:
+      print(colored(f'* {decision_sentence}', 'yellow'))
+    time.sleep(2)
+
+    print(colored('\nProblems:', 'white', 'on_magenta'))
+    for problem_sentence in abs_summary['problems']:
+      print(colored(f'* {problem_sentence}', 'yellow'))
+    time.sleep(2)
+
 all_meeting_ids = GetAllMeetingIDs()
 for meeting_id in all_meeting_ids:
   meeting = Meeting(meeting_id)
   meeting.print_meeting_metadata()
-  # meeting.play_audio()
-  # meeting.print_transcript()
-  # meeting.play_audio()
-  # meeting.print_dialog_acts()
+  meeting.play_audio()
+  meeting.print_transcript()
+  meeting.play_audio()
+  meeting.print_dialog_acts()
   meeting.print_extractive_summary()
+  meeting.print_abstractive_summary()
