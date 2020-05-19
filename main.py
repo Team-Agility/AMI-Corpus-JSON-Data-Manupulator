@@ -1,8 +1,10 @@
 from playsound import playsound
 from termcolor import colored
+import argparse
 import glob
 import time
 import json
+import sys
 import os
 
 os.system('color')
@@ -148,13 +150,47 @@ class Meeting:
       print(colored(f'* {problem_sentence}', 'yellow'))
     time.sleep(2)
 
+  def play_audio_with_transcript(self):
+    self.play_audio()
+    self.print_transcript()
+
+  def play_audio_with_dialog_atcs(self):
+    self.play_audio()
+    self.print_dialog_acts()
+
+parser = argparse.ArgumentParser(description='AMI Corpus JSON Data Manupulator')
+parser.add_argument('--meetings', help='Meeting ids as comma-separated values')
+parser.add_argument('--transcript', action='store_true', help='Play Audio with Transcript')
+parser.add_argument('--dialogacts', action='store_true', help='Play Audio with Dialog Acts')
+parser.add_argument('--extsummary', action='store_true', help='Play Audio with Extractive Summary')
+parser.add_argument('--abssummary', action='store_true', help='Play Audio with Abstractive Summary')
+
+args = parser.parse_args()
+
+# Meetings Args
+no_args_present = not (args.transcript or args.dialogacts or args.extsummary or args.abssummary)
+
 all_meeting_ids = GetAllMeetingIDs()
-for meeting_id in all_meeting_ids:
+if args.meetings:
+  meeting_ids = []
+  meeting_ids_args = args.meetings.split(',')
+  for meeting_id in meeting_ids_args:
+    meeting_id = meeting_id.strip()
+    if meeting_id not in all_meeting_ids:
+      print(colored(f'Meeting ID {meeting_id} is Invalid', 'red'))
+      sys.exit()
+    meeting_ids.append(meeting_id)
+else:
+  meeting_ids = all_meeting_ids
+
+for meeting_id in meeting_ids:
   meeting = Meeting(meeting_id)
   meeting.print_meeting_metadata()
-  meeting.play_audio()
-  meeting.print_transcript()
-  meeting.play_audio()
-  meeting.print_dialog_acts()
-  meeting.print_extractive_summary()
-  meeting.print_abstractive_summary()
+  if args.transcript or no_args_present:
+    meeting.play_audio_with_transcript()
+  if args.dialogacts or no_args_present:
+    meeting.play_audio_with_dialog_atcs()
+  if args.extsummary or no_args_present:
+    meeting.print_extractive_summary()
+  if args.abssummary or no_args_present:
+    meeting.print_abstractive_summary()

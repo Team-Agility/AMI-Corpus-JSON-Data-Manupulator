@@ -20,10 +20,44 @@
     $ python download_dataset.py
     ```
 
-</br>
+<hr/>
 
-## Available Script
+## Usage
+  
+  ```
+  python main.py [-h] [--meetings MEETINGS] [--transcript] [--dialogacts] [--extractivesummary] [--abstractivesummary]
+  ```
+
+  #### ``` --meetings: ``` Meeting ids as comma-separated values
+  #### ``` --transcript: ``` Play Audio with Transcript
+  #### ``` --dialogacts: ``` Play Audio with Dialog Acts
+  #### ``` --extsummary: ``` Play Audio with Extractive Summary
+  #### ``` --abssummary: ``` Play Audio with Abstractive Summary
+
+<hr/>
+
+## Examples
     
-  ### Play Audio with Transcript:
+  ### 1. Play All Meeting Audios with Transcript:
 
-    $ python main.py
+    $ python main.py --transcript
+
+  ### 2. Play Specific Meeting Audio with Transcript:
+
+    $ python main.py --meetings ES2002a --transcript
+
+  ### 3. Play Specific Meetings Audio with Transcript:
+
+    $ python main.py --meetings ES2002a,ES2002b,ES2003a --transcript
+
+  ### 4. Play Specific Meeting Audio with Dialog Acts:
+
+    $ python main.py --meetings ES2002a --dialogacts
+
+  ### 5. Get Extractive Summary in Specific Meeting:
+
+    $ python main.py --meetings ES2002a --extsummary
+
+  ### 6. Get Abstractive Summary in Specific Meeting:
+
+    $ python main.py --meetings ES2002a --abssummary
