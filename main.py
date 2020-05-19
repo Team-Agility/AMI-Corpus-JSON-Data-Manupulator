@@ -100,6 +100,7 @@ class Meeting:
   def get_extractive_summary(self):
     with open(f'{self.meeting_dir}/extractive_summary.json') as extractive_summary_json:
       extractive_summary = json.load(extractive_summary_json)
+      extractive_summary.sort(key=lambda sentence: sentence['dialog_act_start_id'])
       return extractive_summary
 
   def get_abstractive_summary(self):
