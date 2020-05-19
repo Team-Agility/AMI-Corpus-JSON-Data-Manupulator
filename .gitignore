@@ -1,3 +1,11 @@
+# Dataset Files
+amicorpus/
+AMI manual annotations v1.6.2/
+dataset/
+dataset.zip
+Dataset_JSON_Converted.zip
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
