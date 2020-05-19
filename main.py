@@ -83,9 +83,11 @@ class Meeting:
         act = dialog_act['act']
         start_time = float(dialog_act['start_time'])
         end_time = float(dialog_act['end_time'])
+        main_type = None
+        sub_type = None
         if 'type' in dialog_act:
-          main_type = dialog_act['type']['parent']
-          sub_type = dialog_act['type']['name']
+          main_type = dialog_act['type']['main_type']
+          sub_type = dialog_act['type']['sub_type']
 
         if time_escaped < end_time:
           is_meeting_ended = True     
@@ -95,11 +97,33 @@ class Meeting:
         break
       time.sleep(1)
 
+  def get_extractive_summary(self):
+    with open(f'{self.meeting_dir}/extractive_summary.json') as extractive_summary_json:
+      extractive_summary = json.load(extractive_summary_json)
+      return extractive_summary
+
+  def print_extractive_summary(self):
+    print(f'\n-------- Extractive Summary: {self.meeting_id} ----------')
+    ext_summary = self.get_extractive_summary()
+    
+    for ext_summ_sentence in ext_summary:
+      speaker_id = ext_summ_sentence['speaker_id']
+      dialog_act = ext_summ_sentence['dialog_act']
+      main_type = None
+      sub_type = None
+      if 'type' in ext_summ_sentence:
+          main_type = ext_summ_sentence['type']['main_type']
+          sub_type = ext_summ_sentence['type']['sub_type']
+
+      print(colored(f'{speaker_id} - {main_type}({sub_type}): {dialog_act}', TRANSCRIPT_COLORS[speaker_id]))
+      time.sleep(2)
+
 all_meeting_ids = GetAllMeetingIDs()
 for meeting_id in all_meeting_ids:
   meeting = Meeting(meeting_id)
   meeting.print_meeting_metadata()
-  meeting.play_audio()
-  meeting.print_transcript()
-  meeting.play_audio()
-  meeting.print_dialog_acts()
+  # meeting.play_audio()
+  # meeting.print_transcript()
+  # meeting.play_audio()
+  # meeting.print_dialog_acts()
+  meeting.print_extractive_summary()
