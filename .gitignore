@@ -3,7 +3,7 @@ amicorpus/
 AMI manual annotations v1.6.2/
 dataset/
 dataset.zip
-Dataset_JSON_Converted.zip
+Dataset_JSON_Converted*
 
 
 # Byte-compiled / optimized / DLL files
@@ -97,7 +97,7 @@ ipython_config.py
 #   However, in case of collaboration, if having platform-specific dependencies or dependencies
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
-#Pipfile.lock
+Pipfile.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/

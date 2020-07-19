@@ -1,14 +1,20 @@
+import urllib.request
 import requests
 import zipfile
+import json
 import time
 import sys
 import os
 
-DATASET_URL = 'https://objectstorage.ap-mumbai-1.oraclecloud.com/n/bm7noglpf2jq/b/FYP-Data/o/Dataset_JSON_Converted.zip'
+DATASET_METADATA = 'https://objectstorage.ap-mumbai-1.oraclecloud.com/p/fQ4itlKZosP5gtaFpJNk0jZTzDvtXQBm2RefZPZJNS0/n/bm7noglpf2jq/b/FYP-Data/o/updates.json'
 
-local_filename = DATASET_URL.split('/')[-1]
-r = requests.head(DATASET_URL)
-downloading_file_size = int(r.headers['Content-Length'])
+def have_internet():
+    try:
+        _ = requests.get(DATASET_METADATA, timeout=5)
+        return True
+    except requests.ConnectionError:
+        print("Download Failed: No internet connection available.")
+        return False
 
 def start_download(f, response, dl=0):
   timer = time.time()
@@ -33,17 +39,19 @@ def start_download(f, response, dl=0):
     sys.stdout.write("\r[%s%s] %s%s (%sMB/%sMB) %s" % ('=' * done, ' ' * (50-done), done * 2, '%', dl//(1024*1024), total_length//(1024*1024), download_speed))    
     sys.stdout.flush()
 
-def resume_download(resume_byte_pos):
+def resume_download(dataset_url, resume_byte_pos):
+  local_filename = dataset_url.split('/')[-1]
   with open(local_filename, "ab") as f:
     print("Resuming %s" % local_filename)
     resume_header = {'Range': 'bytes=%d-' % resume_byte_pos}
-    response = requests.get(DATASET_URL, headers=resume_header, stream=True)
+    response = requests.get(dataset_url, headers=resume_header, stream=True)
     start_download(f, response, resume_byte_pos)
 
-def download_from_beggining():
+def download_from_beggining(dataset_url):
+  local_filename = dataset_url.split('/')[-1]
   with open(local_filename, "wb") as f:
     print("Downloading %s" % local_filename)
-    response = requests.get(DATASET_URL, stream=True)
+    response = requests.get(dataset_url, stream=True)
     total_length = response.headers.get('content-length')
 
     if total_length is None:
@@ -51,22 +59,54 @@ def download_from_beggining():
     else:
       start_download(f, response)
 
-if os.path.exists(local_filename):
-  existing_file_size = int(os.stat(local_filename).st_size)
-  if existing_file_size == downloading_file_size:
-    print('File Already Downloaded')
-  else:
-    resume_download(existing_file_size)
+# Check Internet Connection
+if not have_internet():
+    sys.exit()
+
+# Download Dataset Metadata
+with urllib.request.urlopen(DATASET_METADATA) as url:
+    data = json.loads(url.read().decode())
+    latest_version = data['latest_version']
+    updates_urls = data['updates']
+  
+# Check for Updates
+DATASET_URLS = []
+if os.path.exists('dataset/metadata.json'):  
+    with open('dataset/metadata.json') as f:
+        d = json.load(f)
+        current_version = d['version']
+        for version, url in data['updates'].items():
+            if version > current_version:
+                DATASET_URLS.append(url) 
 else:
-  download_from_beggining()
+    for version, url in data['updates'].items():
+        DATASET_URLS.append(url)
+        
+# Download updates
+if len(DATASET_URLS) == 0:
+    print('Dataset is already Upto Date')
+else:
+    for DATASET_URL in DATASET_URLS:
+        local_filename = DATASET_URL.split('/')[-1]
+        r = requests.head(DATASET_URL)
+        downloading_file_size = int(r.headers['Content-Length'])
+
+        if os.path.exists(local_filename):
+          existing_file_size = int(os.stat(local_filename).st_size)
+          if existing_file_size == downloading_file_size:
+            print('File Already Downloaded')
+          else:
+            resume_download(DATASET_URL, existing_file_size)
+        else:
+          download_from_beggining(DATASET_URL)
 
 
-with zipfile.ZipFile(local_filename, 'r') as zip_ref:
-  print('\n\nExtracting Dataset. It may take some time ...')
-  zip_ref.extractall()
+        with zipfile.ZipFile(local_filename, 'r') as zip_ref:
+          print('\n\nExtracting Dataset. It may take some time ...')
+          zip_ref.extractall()
 
-print('Dataset Extracted.')
-try:
-  os.remove(local_filename)
-except OSError:
-  pass
+        print('Dataset Extracted.')
+        try:
+          os.remove(local_filename)
+        except OSError:
+          pass
