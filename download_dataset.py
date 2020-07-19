@@ -15,6 +15,10 @@ def have_internet():
     except requests.ConnectionError:
         print("Download Failed: No internet connection available.")
         return False
+        
+def count_dataset_files():
+    number_files = sum([len(files) for r, d, files in os.walk('dataset')])
+    return number_files
 
 def start_download(f, response, dl=0):
   timer = time.time()
@@ -59,6 +63,10 @@ def download_from_beggining(dataset_url):
     else:
       start_download(f, response)
 
+if not os.path.exists('dataset/metadata.json') and os.path.exists('dataset') and count_dataset_files() >= 299: 
+    with open('dataset/metadata.json', 'w', encoding='utf-8') as f:
+        json.dump({ "version": "1.0" }, f, ensure_ascii=False, indent=4)
+        
 # Check Internet Connection
 if not have_internet():
     sys.exit()
