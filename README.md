@@ -67,3 +67,26 @@
   ### 6. Get Abstractive Summary in Specific Meeting:
 
     $ python main.py --meetings ES2002a --abssummary
+
+## Release Notes
+
+> #### v1.1
+> 
+> -  Added Transcripts
+> -  Added Dialog Acts
+> -  Added Word Segmentations
+> -  Added Topic Segmentations
+> -  Added Decision Points
+> -  Added Extractive Summaries
+> -  Added Abstractive Summaries
+>
+>
+> #### v1.0
+> 
+> -  Initial Release with Meeting Audios only
+>
+
+
+## License
+
+Licensed under The MIT License (MIT)
