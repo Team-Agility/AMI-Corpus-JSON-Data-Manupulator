@@ -74,6 +74,7 @@
 > 
 > -  Added Transcripts
 > -  Added Dialog Acts
+> -  Added Adjacency Pairs
 > -  Added Word Segmentations
 > -  Added Topic Segmentations
 > -  Added Decision Points
