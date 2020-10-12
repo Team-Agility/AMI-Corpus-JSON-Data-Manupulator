@@ -20,6 +20,12 @@
     $ python download_dataset.py
     ```
 
+4. Update Dataset
+
+    ```
+    $ python download_dataset.py
+    ```
+
 <hr/>
 
 ## Usage
