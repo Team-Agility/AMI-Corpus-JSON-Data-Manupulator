@@ -17,6 +17,11 @@ TRANSCRIPT_COLORS = {
   'D': 'white'
 }
 
+"""
+  Get All Dataset's Meeting IDs
+  
+  :return: Strring Array with Meeting IDs
+"""
 def GetAllMeetingIDs():
   return [ os.path.basename(folder_path) for folder_path in glob.glob(f'{DATASET_OUT_DIR}/*')]
 
@@ -25,13 +30,25 @@ class Meeting:
     self.meeting_id = meeting_id
     self.meeting_dir = f'{DATASET_OUT_DIR}/{self.meeting_id}'
 
+  """
+    Get Meeting Audio Relative Path
+
+    :return: Meeting Audio Relative Path
+  """
   def get_audio_path(self):
     return f'{self.meeting_dir}/audio.wav'
 
+  """
+    Play Meeting Audio
+  """
   def play_audio(self):
     print(f'\nPlaying {self.meeting_id} ....')
     playsound(self.get_audio_path(), False)
 
+  """
+    Print Meeting Participant MetaData
+    * global_name, role, sex, age, native_language, region & Total Words in Transcript
+  """
   def print_meeting_metadata(self):
     print(f'\n\n------------ Meeting: {self.meeting_id} --------------')
     with open(f'{self.meeting_dir}/transcript.json') as transcript_json:
@@ -40,11 +57,20 @@ class Meeting:
       for speaker_id, speaker_meta in speakers.items():
         print(f"Speaker ID: {speaker_id}, Global Name: {speaker_meta['global_name']}, Role: {speaker_meta['role']}, Sex: {speaker_meta['sex']}, Age: {speaker_meta['age']}, Native Language: {speaker_meta['native_language']}, Region: {speaker_meta['region']}")
 
+  """
+    Get Meeting Words
+
+    :return: Meeting words dict
+  """
   def get_transcript(self):
     with open(f'{self.meeting_dir}/transcript.json') as transcript_json:
       transcripts = json.load(transcript_json)
       return transcripts['transcript']
 
+  """
+    Print Meeting Words
+    * Agent ID, Start Time, End Time, Word
+  """
   def print_transcript(self):   
     print(f'\n----------- Transcript: {self.meeting_id} -------------')
     timer = time.time() 
@@ -67,11 +93,19 @@ class Meeting:
         break
       time.sleep(1)
 
+  """
+    Get Dialog Acts
+
+    :return: Dialog Acts dict
+  """
   def get_dialog_acts(self):
     with open(f'{self.meeting_dir}/dialog_acts.json') as dialog_acts_json:
       dialog_acts = json.load(dialog_acts_json)
       return dialog_acts['acts']
 
+  """
+    Print Dialog Acts
+  """
   def print_dialog_acts(self):
     print(f'\n---------- Dialog Acts: {self.meeting_id} ------------')
     timer = time.time() 
@@ -99,17 +133,29 @@ class Meeting:
         break
       time.sleep(1)
 
+  """
+    Get Extractive Summary
+
+    :return: Dict of Extractive Summary
+  """
   def get_extractive_summary(self):
     with open(f'{self.meeting_dir}/extractive_summary.json') as extractive_summary_json:
       extractive_summary = json.load(extractive_summary_json)
       extractive_summary.sort(key=lambda sentence: sentence['dialog_act_start_id'])
       return extractive_summary
+  """
+    Get Abstractive Summary
 
+    :return: Dict of Abstractive Summary
+  """
   def get_abstractive_summary(self):
     with open(f'{self.meeting_dir}/abstractive_summary.json') as abstractive_summary_json:
       abstractive_summary = json.load(abstractive_summary_json)
       return abstractive_summary
 
+  """
+    Print Extractive Summary
+  """
   def print_extractive_summary(self):
     print(f'\n-------- Extractive Summary: {self.meeting_id} ----------')
     ext_summary = self.get_extractive_summary()
@@ -126,6 +172,9 @@ class Meeting:
       print(colored(f'{speaker_id} - {main_type}({sub_type}): {dialog_act}', TRANSCRIPT_COLORS[speaker_id]))
       time.sleep(2)
 
+  """
+    Print Abstractive Summary
+  """
   def print_abstractive_summary(self):
     print(f'\n-------- Abstractive Summary: {self.meeting_id} ----------')
     abs_summary = self.get_abstractive_summary()
@@ -150,10 +199,16 @@ class Meeting:
       print(colored(f'* {problem_sentence}', 'yellow'))
     time.sleep(2)
 
+  """
+    Play Meeting Audio with Transcript
+  """
   def play_audio_with_transcript(self):
     self.play_audio()
     self.print_transcript()
 
+  """
+    Play Meeting Audio with Dialog Acts
+  """
   def play_audio_with_dialog_atcs(self):
     self.play_audio()
     self.print_dialog_acts()
