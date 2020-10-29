@@ -70,7 +70,13 @@
 
 ## Release Notes
 
-> #### v1.1
+> #### v1.2 - 2020-10-29
+> 
+> -  Added Summary Links
+> -  Added Arguments
+> -  Added Discussions
+>
+> #### v1.1 - 2020-10-12
 > 
 > -  Added Transcripts
 > -  Added Dialog Acts
@@ -82,7 +88,7 @@
 > -  Added Abstractive Summaries
 >
 >
-> #### v1.0
+> #### v1.0 - 2020-05-20
 > 
 > -  Initial Release with Meeting Audios only
 >
