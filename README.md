@@ -70,6 +70,11 @@
 
 ## Release Notes
 
+> #### v1.3 - 2021-06-06
+> 
+> -  Added Confidence Level Data
+> -  Updated Abstractive Summary Data
+>
 > #### v1.2 - 2020-10-29
 > 
 > -  Added Summary Links
